@@ -36,6 +36,7 @@ class Timer(tk.Frame):
 
     def start(self):
         self.running = True
+        self.update_timer()
         self.start_button.config(state="disabled")
         self.stop_button.config(state="normal")
 
@@ -55,17 +56,16 @@ class Timer(tk.Frame):
         self.laps_text.delete('1.0', tk.END)
 
     def lap(self):
-        self.laps.append(self.display_seconds)
-        self.laps_text.insert(tk.END, f"{len(self.laps)}. {self.display_seconds}\n")
+        self.laps.append(self.time_label.cget("text"))
+        self.laps_text.insert(tk.END, f"{len(self.laps)}. {self.time_label.cget('text')}\n")
 
     def update_timer(self):
         if self.running:
             self.seconds += 1
             hours, remainder = divmod(self.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
-            self.display_seconds = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
-            self.time_label.config(text=self.display_seconds)
-        self.master.after(1000, self.update_timer)
+            self.time_label.config(text="{:02d}:{:02d}:{:02d}".format(hours, minutes, seconds))
+            self.master.after(1000, self.update_timer)
 
 root = tk.Tk()
 app = Timer(master=root)
